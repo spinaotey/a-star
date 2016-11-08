@@ -79,3 +79,49 @@ void sep_line(char *line, char *separators, char ***elements, uint32_t *n){
     }
 
 }
+
+
+
+
+/*  load_node
+
+    Loads node data from line into node structure. The following
+    order in the elements of the line is assumed:
+        1.  Node ID.
+        2.  Node name.
+        9.  Node latitude.
+        10. Node longitude.
+
+    Variables:
+        -line = Input line with node data.
+        -separator = string to separate the input.
+    
+    Return value:
+        node filled with the data of the line
+ */
+node_t load_node(char *line, char *separator){
+    char **elements;
+    uint32_t i,n;
+    node_t node;
+
+    sep_line(line,separator, &elements,&n);
+    
+    sscanf(elements[1],"%"SCNi64,&node.id);
+
+    node.name = (char *) malloc(strlen(elements[2])+1);
+    strcpy(node.name,elements[2]);
+    
+    sscanf(elements[9],"%lf",&node.lat);
+    sscanf(elements[10],"%lf",&node.lon);
+
+    node.nsucc = 0;
+
+    node.successors = (uint64_t *) malloc(sizeof(uint64_t)*2);assert(node.successors);
+
+    for(i=0; i<n; i++)
+        free(elements[i]);
+
+    free(elements);
+
+    return node;
+} 

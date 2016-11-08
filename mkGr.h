@@ -8,7 +8,7 @@ typedef struct{
     double lat, lon;        // Spherical coordinates
     uint8_t nsucc;          // Number of successors
     uint64_t *successors;   // Position in node vector
-} node;
+} node_t;
 
 
 /*  strtok_single
@@ -44,3 +44,22 @@ char * strtok_single (char * str, char const * delims);
  
  */
 void sep_line(char *line, char *separators, char ***elements, uint32_t *n);
+
+
+/*  load_node
+
+    Loads node data from line into node structure. The following
+    order in the elements of the line is assumed:
+        1.  Node ID.
+        2.  Node name.
+        9.  Node latitude.
+        10. Node longitude.
+
+    Variables:
+        -line = Input line with node data.
+        -separator = string to separate the input.
+    
+    Return value:
+        node filled with the data of the line
+ */
+node_t load_node(char *line, char *separator);
