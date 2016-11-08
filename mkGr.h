@@ -1,6 +1,16 @@
 #pragma once
 #include <inttypes.h>
 
+/* Node Structure of the graph */
+typedef struct{
+    uint64_t id;            // Identification number
+    char *name;             // Name (if available)
+    double lat, lon;        // Spherical coordinates
+    uint8_t nsucc;          // Number of successors
+    uint64_t *successors;   // Position in node vector
+} node;
+
+
 /*  strtok_single
 
     strtok manual implementation where zero string elements are
