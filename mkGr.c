@@ -125,3 +125,24 @@ node_t load_node(char *line, char *separator){
 
     return node;
 } 
+
+/*  compare_id
+
+    Compares the id's of two nodes. It is implemented to use bsearch
+    from <stdlib.h>. 
+
+    Variables:
+        -node1 = pointer to first node.
+        -node2 = pointer to second node.
+    
+    Return value:
+        -1 if id_1 < id_2
+        0  if id_1 == id_2
+        1  if id_1 > id_2
+ */
+ 
+int compare_id(const void *node1, const void *node2){
+    uint64_t id_1 = ((node_t *) node1)->id;
+    uint64_t id_2 = ((node_t *) node2)->id;
+    return id_1 < id_2 ? -1: (id_1 > id_2 ? 1 : 0);
+}
