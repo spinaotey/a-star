@@ -106,15 +106,15 @@ node_t load_node(char *line, char *separator){
 
     sep_line(line,separator, &elements,&n);
     
-    sscanf(elements[1],"%"SCNi64,&node.id);
+    sscanf(elements[1],"%"SCNi64,&node.id); // node ID
 
     node.name = (char *) malloc(strlen(elements[2])+1);
-    strcpy(node.name,elements[2]);
+    strcpy(node.name,elements[2]); // node name (if available)
     
-    sscanf(elements[9],"%lf",&node.lat);
-    sscanf(elements[10],"%lf",&node.lon);
+    sscanf(elements[9],"%lf",&node.lat); //node latitude
+    sscanf(elements[10],"%lf",&node.lon); //node longitude
 
-    node.nsucc = 0;
+    node.nsucc = 0; //initiate number of successors
 
     node.successors = (uint64_t *) malloc(sizeof(uint64_t)*2);assert(node.successors);
 
@@ -145,4 +145,90 @@ int compare_id(const void *node1, const void *node2){
     uint64_t id_1 = ((node_t *) node1)->id;
     uint64_t id_2 = ((node_t *) node2)->id;
     return id_1 < id_2 ? -1: (id_1 > id_2 ? 1 : 0);
+}
+
+
+
+/*  add_succ
+
+    Adds a successor to a node, changing the size of the
+    vector if necessary
+ 
+    Variables:
+        -node = node to add the successor.
+        -vPos = position in the node vector.
+ */
+void add_succ(node_t *node, uint64_t vPos){
+    
+    /* If needed, modify vector size of successors */    
+    if((((node->nsucc)%2) == 0) && (node->nsucc != 0)){
+        node->successors = realloc(node->successors,
+                                   sizeof(uint64_t)*((node->nsucc)+2));
+        assert(node->successors);
+    }
+    /* Adds the vector position */
+    (node->successors)[node->nsucc] = vPos;
+    node->nsucc++;
+}
+
+
+/*  add_way
+
+    Computes for a way the nodes appearing in it, their position in the node
+    vector, and depending of oneway or twoway, adds the edges to the nodes.
+    
+    Variables:
+        -nodes = vector of nodes.
+        -nnodes = number of nodes.
+        -line = string of the way line.
+        -separator = string to delimite the columns of the line.
+ */
+void add_way(node_t *nodes, uint64_t nnodes, char *line, char *separator){
+    uint32_t n, i, nnInWay = 0;
+    uint64_t *nPos;
+
+    
+    node_t auxNode, *p;
+
+    char **elements;
+    
+    sep_line(line,separator, &elements,&n);
+    
+    /* There has to be more than one node in the way */
+    if(n > 10){
+        nPos = (uint64_t *) malloc(sizeof(uint64_t)*(n-9));assert(nPos);
+        /* Find node positions in the node vector from their id's */
+        for(i=9; i<n; i++){
+            sscanf(elements[i],"%"SCNi64,&auxNode.id);
+            p = (node_t *) bsearch(&auxNode, nodes, nnodes,sizeof(node_t),compare_id);
+            /* If found in our nodes */
+            if(p != NULL){
+                nPos[nnInWay] = (p-nodes);
+                nnInWay++;
+            }
+        }
+
+        /* There are enough nodes belonging to our graph */
+        if(nnInWay >= 2){
+            /* Oneway way */
+            if(strcmp("oneway",elements[7]) == 0)
+                for(i=0; i<(nnInWay-1);i++)
+                    add_succ(&nodes[nPos[i]],nPos[i+1]);
+            /* Twoway way */
+            else{
+                for(i=0; i<(nnInWay-1);i++){
+                    add_succ(&nodes[nPos[i]],nPos[i+1]);
+                    add_succ(&nodes[nPos[i+1]],nPos[i]);
+                }
+            };
+
+
+        }
+
+    }
+
+    for(i=0; i<n; i++)
+        free(elements[i]);
+
+    free(elements);
 }

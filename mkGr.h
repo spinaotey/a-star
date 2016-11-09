@@ -81,3 +81,31 @@ node_t load_node(char *line, char *separator);
  */
  
 int compare_id(const void *node1, const void *node2);
+
+
+
+
+/*  add_succ
+
+    Adds a successor to a node, changing the size of the
+    vector if necessary
+ 
+    Variables:
+        -node = node to add the successor.
+        -vPos = position in the node vector.
+ */
+void add_succ(node_t *node, uint64_t id);
+
+
+/*  add_way
+
+    Computes for a way the nodes appearing in it, their position in the node
+    vector, and depending of oneway or twoway, adds the edges to the nodes.
+    
+    Variables:
+        -nodes = vector of nodes.
+        -nnodes = number of nodes.
+        -line = string of the way line.
+        -separator = string to delimite the columns of the line.
+ */
+void add_way(node_t *nodes, uint64_t nnodes, char *line, char *separator);
