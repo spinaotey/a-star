@@ -159,16 +159,24 @@ int compare_id(const void *node1, const void *node2){
         -vPos = position in the node vector.
  */
 void add_succ(node_t *node, uint64_t vPos){
-    
-    /* If needed, modify vector size of successors */    
-    if((((node->nsucc)%2) == 0) && (node->nsucc != 0)){
-        node->successors = realloc(node->successors,
-                                   sizeof(uint64_t)*((node->nsucc)+2));
-        assert(node->successors);
+    uint8_t i;
+
+    /* To not add duplicates */
+    for(i=0; i< node->nsucc; i++)
+        if((node->successors)[i] == vPos)
+            break;
+
+    if(i == node->nsucc){
+        /* If needed, modify vector size of successors */    
+        if((((node->nsucc)%2) == 0) && (node->nsucc != 0)){
+            node->successors = realloc(node->successors,
+                                       sizeof(uint64_t)*((node->nsucc)+2));
+            assert(node->successors);
+        }
+        /* Adds the vector position */
+        (node->successors)[node->nsucc] = vPos;
+        node->nsucc++;
     }
-    /* Adds the vector position */
-    (node->successors)[node->nsucc] = vPos;
-    node->nsucc++;
 }
 
 
@@ -183,7 +191,7 @@ void add_succ(node_t *node, uint64_t vPos){
         -line = string of the way line.
         -separator = string to delimite the columns of the line.
  */
-void add_way(node_t *nodes, uint64_t nnodes, char *line, char *separator){
+void add_way(node_t *nodes, uint64_t nNodes, char *line, char *separator){
     uint32_t n, i, nnInWay = 0;
     uint64_t *nPos;
 
@@ -200,7 +208,7 @@ void add_way(node_t *nodes, uint64_t nnodes, char *line, char *separator){
         /* Find node positions in the node vector from their id's */
         for(i=9; i<n; i++){
             sscanf(elements[i],"%"SCNi64,&auxNode.id);
-            p = (node_t *) bsearch(&auxNode, nodes, nnodes,sizeof(node_t),compare_id);
+            p = (node_t *) bsearch(&auxNode, nodes, nNodes,sizeof(node_t),compare_id);
             /* If found in our nodes */
             if(p != NULL){
                 nPos[nnInWay] = (p-nodes);
