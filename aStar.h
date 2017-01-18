@@ -1,5 +1,16 @@
 #pragma once
 #define EARTH_RADIUS 6371008.8 //mean earth radius (meters)
+#include <inttypes.h>
+
+typedef uint8_t Queue;
+enum whichQueue {NONE, OPEN, CLOSED};
+
+typedef struct AStarStatus_s{
+    double g,h;
+    uint64_t parent;
+    Queue whq;
+} AStarStatus_t;
+
 typedef struct node_s node_t;
 
 /*  DIS2NODES
