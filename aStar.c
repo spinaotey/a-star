@@ -19,3 +19,29 @@ double dis2nodes(node_t n1, node_t n2){
     double dlon = ABS(n1.lon-n2.lon);
     return sqrt(POW2(dlat)+POW2(dlon))*EARTH_RADIUS;
 }
+
+
+/*  HEURISTIC1
+ *
+ *  Heuristic function invented by me for the a* algorithm.
+ *  It takes a geodesic "in diagonal" and then goes straight.
+ *
+ *  Input:
+ *      currentNode: current node to find heuristic distance.
+ *      destinationNode: destination node.
+ *
+ *  Return: heuristic distance.
+ */
+double heuristic1(node_t currentNode, node_t destinationNode){
+    double dlat = ABS(n1.lat-n2.lat);
+    double dlon = ABS(n1.lon-n2.lon);
+    double min,max;
+    if(dlat>dlon){
+        max = dlat;
+        min = dlon;
+    }else{
+        max = dlon;
+        min = dlat;
+    }
+    return ((max-min)+2.*asin(sqrt(1.+cos(min))*sin(min*0.5)))*EARTH_RADIUS;
+}
