@@ -2,7 +2,7 @@
 #include <inttypes.h>
 
 /* Node Structure of the graph */
-typedef struct{
+typedef struct node_s{
     uint64_t id;            // Identification number
     char *name;             // Name (if available)
     double lat, lon;        // Spherical coordinates
