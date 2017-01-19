@@ -6,13 +6,12 @@ typedef uint8_t Queue;
 enum whichQueue {NONE, OPEN, CLOSED};
 
 typedef struct AStarStatus_s{
-    double g,h;
+    double g,h,f;
     uint64_t parent;
     Queue whq;
 } AStarStatus_t;
 
 typedef struct queue_s{
-    struct queue_s *previous;
     struct queue_s *next;
     uint64_t id;
 } queue_t;
@@ -34,8 +33,9 @@ double dis2nodes(node_t n1, node_t n2);
 
 /*  HEURISTIC1
  *
- *  Heuristic function invented by me for the a* algorithm.
- *  It takes a geodesic "in diagonal" and then goes straight.
+ *  Heuristic function for the a* algorithm. Since we are on the
+ *  Earth surface, we will use the great circle distance. In
+ *  particular, we will use the haversine formula.
  *
  *  Input:
  *      currentNode: current node to find heuristic distance.
@@ -59,3 +59,23 @@ double heuristic1(node_t currentNode, node_t destinationNode);
  *          returns -1.
  */
 uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId);
+
+/*  ASTARALGORITHM
+ *
+ *  Given a startin node and a target node in the graph, the a-star
+ *  algorithm is applied to find a path between them, trying to make
+ *  it as short as possible. The path can be reconstructed from the
+ *  AStarStatus vector after its completation. 
+ *
+ *  Input:
+ *      nodes: vector of nodes.
+ *      status: vector of AStarStatus which will be modified.
+ *      nNodes: number of nodes in vector.
+ *      startNode: position of starting node in the vector of nodes.
+ *      targetNode: position of target node in the vector of nodes.
+ *
+ *  Return: 0 if algorithm was successfull in finding a path, 1 otherwise.
+ */
+uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status, 
+                    uint64_t nNodes, uint64_t startNode,
+                    uint64_t targetNode);
