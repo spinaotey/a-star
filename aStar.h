@@ -11,6 +11,12 @@ typedef struct AStarStatus_s{
     Queue whq;
 } AStarStatus_t;
 
+typedef struct queue_s{
+    struct queue_s *previous;
+    struct queue_s *next;
+    uint64_t id;
+} queue_t;
+
 typedef struct node_s node_t;
 
 /*  DIS2NODES
@@ -37,4 +43,19 @@ double dis2nodes(node_t n1, node_t n2);
  *
  *  Return: heuristic distance.
  */
-double heuristic1(node_t currentNode, node_t destinationNode){
+double heuristic1(node_t currentNode, node_t destinationNode);
+
+/*  FINDNODE
+ *
+ *  Finds node position in vector given its ID. If it is not
+ *  found it returns -1.
+ *
+ *  Input:
+ *      nodes: vector of nodes.
+ *      nNodes: number of nodes in vector.
+ *      targetId: ID to look for.
+ *
+ *  Return: position of the node with input ID. If not found it
+ *          returns -1.
+ */
+uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId);
