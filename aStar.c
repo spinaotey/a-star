@@ -19,8 +19,12 @@
  *  Return: approximate distance.
  */
 double dis2nodes(node_t n1, node_t n2){
-    double dlat = ABS(n1.lat-n2.lat);
-    double dlon = ABS(n1.lon-n2.lon);
+    double lat1 = n1.lat*DEG2RAD;
+    double lat2 = n2.lat*DEG2RAD;
+    double lon1 = n1.lon*DEG2RAD;
+    double lon2 = n2.lon*DEG2RAD;
+    double dlat = ABS(lat1-lat2);
+    double dlon = ABS(lon1-lon2);
     return sqrt(POW2(dlat)+POW2(dlon))*EARTH_RADIUS;
 }
 
@@ -38,13 +42,17 @@ double dis2nodes(node_t n1, node_t n2){
  *  Return: heuristic distance.
  */
 double heuristic1(node_t currentNode, node_t destinationNode){
-    double dlat = ABS(destinationNode.lat-currentNode.lat);
-    double dlon = ABS(destinationNode.lon-currentNode.lon);
+    double lat1 = currentNode.lat*DEG2RAD;
+    double lat2 = destinationNode.lat*DEG2RAD;
+    double lon1 = currentNode.lon*DEG2RAD;
+    double lon2 = destinationNode.lon*DEG2RAD;
+    double dlat = ABS(lat1-lat2);
+    double dlon = ABS(lon1-lon2);
     double slat = sin(dlat*0.5);
     double slon = sin(dlon*0.5);
 
     return 2.*asin(sqrt(POW2(slat)+
-           cos(destinationNode.lat)*cos(currentNode.lat)*
+           cos(lat1)*cos(lat2)*
            POW2(slon)))*EARTH_RADIUS;
 }
 
@@ -68,7 +76,7 @@ uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId){
     if(resultNode == NULL)
         return -1;
     else
-        return (nodes-resultNode);
+        return (resultNode-nodes);
 }
 
 /*  ASTARALGORITHM
@@ -95,24 +103,12 @@ uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status,
     uint64_t fmin,currentNode,successorNode;
     uint8_t i;
     double successorCurrentCost;
-   /* 
-    startNode = findNode(nodes,nNodes,startId);
-    if(startNode == -1){
-        fprintf(stderr,"ERROR: Start node not found in graph.\n");
-        return -1;
-    }
-    targetNode = findNode(nodes,nNodes,targetId);
-    if(targetNode == -1){
-        fprintf(stderr,"ERROR: Target node not found in graph.\n");
-        return -2;
-    }
-    */
+    
     /* Initialize */
     open = malloc(sizeof(queue_t)); assert(open);
     open->next = NULL;
     open->id = startNode;
-    
-    status[startNode].parent = -1;
+
     status[startNode].g = 0.;
     status[startNode].h = heuristic1(nodes[startNode],nodes[targetNode]);
     status[startNode].f = status[startNode].g+status[startNode].h;
