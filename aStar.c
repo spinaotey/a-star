@@ -9,9 +9,9 @@
 
 /*  DIS2NODES
  *
- *  Computes the distance between two nodes of the graph. We
- *  assume that two nodes are close enough to make a planar
- *  approximation of the earth.
+ *  Since we are on the
+ *  Earth surface, we will use the great circle distance. In
+ *  particular, we will use the haversine formula.
  *
  *  Input:
  *      n1,n2: nodes to compute the distance between.
@@ -25,7 +25,12 @@ double dis2nodes(node_t n1, node_t n2){
     double lon2 = n2.lon*DEG2RAD;
     double dlat = ABS(lat1-lat2);
     double dlon = ABS(lon1-lon2);
-    return sqrt(POW2(dlat)+POW2(dlon))*EARTH_RADIUS;
+    double slat = sin(dlat*0.5);
+    double slon = sin(dlon*0.5);
+
+    return 2.*asin(sqrt(POW2(slat)+
+           cos(lat1)*cos(lat2)*
+           POW2(slon)))*EARTH_RADIUS;
 }
 
 

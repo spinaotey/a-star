@@ -9,17 +9,17 @@ main:           main.o mkGr.o aStar.o myFunctions.o
 		$(COMPILER) $(CFLAGS) -o main main.o mkGr.o aStar.o myFunctions.o $(LFLAGS)
 
 main.o: main.c $(INCLUDES)
-		$(COMPILER) $(CFLGS) -c main.c $(LFLAGS)
+		$(COMPILER) $(CFLAGS) -c main.c $(LFLAGS)
 
 mkGr.o:			mkGr.c $(INCLUDES)
 		$(COMPILER) $(CFLAGS) -c mkGr.c $(LFLAGS)
 
 aStar.o: aStar.c $(INCLUDES)
-		$(COMPILER) $(CFLGS) -c aStar.c $(LFLAGS)
+		$(COMPILER) $(CFLAGS) -c aStar.c $(LFLAGS)
 
 
 myFunctions.o: myFunctions.c $(INCLUDES)
-		$(COMPILER) $(CFLGS) -c myFunctions.c $(LFLAGS)
+		$(COMPILER) $(CFLAGS) -c myFunctions.c $(LFLAGS)
 
 test:			$(OBJECTSTEST)
 		$(COMPILER) $(CFLAGS) -o test $(OBJECTSTEST) $(LFLAGS)
@@ -29,7 +29,7 @@ runTest:		test
 test.o:		$(INCLUDES) test.c
 		$(COMPILER) $(CFLAGS) -c test.c $(LFLAGS)
 
-runTest:		main
+runMain:		main
 		perf stat ./main bla 240949599 195977239
 
 clean:
