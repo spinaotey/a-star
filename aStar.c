@@ -23,8 +23,8 @@ double dis2nodes(node_t n1, node_t n2){
     double lat2 = n2.lat*DEG2RAD;
     double lon1 = n1.lon*DEG2RAD;
     double lon2 = n2.lon*DEG2RAD;
-    double dlat = ABS(lat1-lat2);
-    double dlon = ABS(lon1-lon2);
+    double dlat = lat1-lat2;
+    double dlon = lon1-lon2;
     double slat = sin(dlat*0.5);
     double slon = sin(dlon*0.5);
 
@@ -51,8 +51,8 @@ double heuristic1(node_t currentNode, node_t destinationNode){
     double lat2 = destinationNode.lat*DEG2RAD;
     double lon1 = currentNode.lon*DEG2RAD;
     double lon2 = destinationNode.lon*DEG2RAD;
-    double dlat = ABS(lat1-lat2);
-    double dlon = ABS(lon1-lon2);
+    double dlat = lat1-lat2;
+    double dlon = lon1-lon2;
     double slat = sin(dlat*0.5);
     double slon = sin(dlon*0.5);
 
