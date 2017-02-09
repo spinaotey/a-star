@@ -60,6 +60,31 @@ double heuristic1(node_t currentNode, node_t destinationNode);
  */
 uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId);
 
+/*  INSERTNODETOQUEUE
+ *
+ *  Puts node into queue dynamic list in a sorted way,
+ *  from smallest f to biggest f, obtained from status.
+ *  
+ *
+ *  Input:
+ *      queue: queue pointer to pointer of the first element.
+ *      nodeId: ID to put into list in a sorted way.
+ *      status: vector of status of the nodes in the algorithm.
+ */
+void insertNodeToQueue(queue_t **queue,uint64_t nodeId,
+                       AStarStatus_t *status);
+
+/*  DELETENODEFROMQUEUE
+ *
+ *  Deletes dynamic list element of queue containing nodeID.
+ *  User must be sure that the ID is in the list. 
+ *
+ *  Input:
+ *      queue: queue pointer to pointer of the first element.
+ *      nodeId: ID to put into list in a sorted way.
+ */
+void deleteNodefromQueue(queue_t **queue, uint64_t nodeId);
+
 /*  ASTARALGORITHM
  *
  *  Given a startin node and a target node in the graph, the a-star

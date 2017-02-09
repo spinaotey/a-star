@@ -84,6 +84,61 @@ uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId){
         return (resultNode-nodes);
 }
 
+/*  INSERTNODETOQUEUE
+ *
+ *  Puts node into queue dynamic list in a sorted way,
+ *  from smallest f to biggest f, obtained from status.
+ *  
+ *
+ *  Input:
+ *      queue: queue pointer to pointer of the first element.
+ *      nodeId: ID to put into list in a sorted way.
+ *      status: vector of status of the nodes in the algorithm.
+ */
+void insertNodeToQueue(queue_t **queue,uint64_t nodeId,
+                       AStarStatus_t *status){
+    queue_t *auxQueue,*queueIterator; 
+    auxQueue = malloc(sizeof(queue_t)); assert(auxQueue);
+    auxQueue->id = nodeId;
+    if(status[(*queue)->id].f >= status[nodeId].f){
+        auxQueue->next = *queue;
+        *queue = auxQueue;
+    }else{
+        queueIterator = *queue;
+        while(queueIterator->next != NULL && 
+              status[queueIterator->next->id].f < status[nodeId].f)
+            queueIterator = queueIterator->next;
+        auxQueue->next = queueIterator->next;
+        queueIterator->next = auxQueue;
+    }
+
+}
+
+/*  DELETENODEFROMQUEUE
+ *
+ *  Deletes dynamic list element of queue containing nodeID.
+ *  User must be sure that the ID is in the list. 
+ *
+ *  Input:
+ *      queue: queue pointer to pointer of the first element.
+ *      nodeId: ID to put into list in a sorted way.
+ */
+void deleteNodefromQueue(queue_t **queue, uint64_t nodeId){
+    queue_t *auxQueue,*queueIterator;
+    if((*queue)->id == nodeId){
+        auxQueue = *queue;
+        *queue = auxQueue->next;
+        free(auxQueue);
+    }else{
+        queueIterator = *queue;
+        while(queueIterator->next->id != nodeId)
+            queueIterator = queueIterator->next;
+        auxQueue = queueIterator->next;
+        queueIterator->next = auxQueue->next;
+        free(auxQueue);
+    }
+}
+
 /*  ASTARALGORITHM
  *
  *  Given a startin node and a target node in the graph, the a-star
@@ -103,7 +158,7 @@ uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId){
 uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status, 
                     uint64_t nNodes, uint64_t startNode,
                     uint64_t targetNode){
-    queue_t *open,*close,*queueIterator,*auxQueue;
+    queue_t *open,*auxQueue;
     uint64_t nResult;
     uint64_t fmin,currentNode,successorNode;
     uint8_t i;
@@ -122,16 +177,7 @@ uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status,
     /* Main Loop */
     while(open != NULL){
         // Select current node with smallest f
-        queueIterator = open;
-        fmin = status[queueIterator->id].f;
-        currentNode = queueIterator->id;
-        while(queueIterator->next != NULL){
-            queueIterator = queueIterator->next;
-            if(status[queueIterator->id].f < fmin){
-                fmin = status[queueIterator->id].f;
-                currentNode = queueIterator->id;
-            }
-        }
+        currentNode = open->id;
         // If current node is target node, we are done
         if(currentNode == targetNode)
             break;
@@ -143,48 +189,26 @@ uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status,
             if(status[successorNode].whq == OPEN){
                 if(status[successorNode].g <= successorCurrentCost)
                     continue;
+                else
+                    deleteNodefromQueue(&open,successorNode);
             }else if(status[successorNode].whq == CLOSED){
                 if(status[successorNode].g <= successorCurrentCost)
                     continue;
                 //Add successor node to open list
                 status[successorNode].whq = OPEN;
-                queueIterator = open;
-                while(queueIterator->next != NULL)
-                    queueIterator = queueIterator->next;
-                queueIterator->next = malloc(sizeof(queue_t));
-                queueIterator = queueIterator->next;
-                queueIterator->next = NULL;
-                queueIterator->id = successorNode;
             }else{
                 //Add successor node to open list
                 status[successorNode].whq = OPEN;
-                queueIterator = open;
-                while(queueIterator->next != NULL)
-                    queueIterator = queueIterator->next;
-                queueIterator->next = malloc(sizeof(queue_t));
-                queueIterator = queueIterator->next;
-                queueIterator->next = NULL;
-                queueIterator->id = successorNode;
                 status[successorNode].h = heuristic1(nodes[successorNode],nodes[targetNode]);
             }
             status[successorNode].g = successorCurrentCost;
             status[successorNode].f = status[successorNode].g + status[successorNode].h;
             status[successorNode].parent = currentNode;
+            insertNodeToQueue(&open,successorNode,status);
         }
         //Add current node to CLOSED list (also remove from open)
         status[currentNode].whq = CLOSED;
-        if(open->id == currentNode){
-            auxQueue = open;
-            open = open->next;
-            free(auxQueue);
-        }else{
-            queueIterator = open;
-            while(queueIterator->next->id != currentNode)
-                queueIterator = queueIterator->next;
-            auxQueue = queueIterator->next;
-            queueIterator->next = auxQueue->next;
-            free(auxQueue);
-        }
+        deleteNodefromQueue(&open,currentNode);
     }
     //Free open list
     while(open != NULL){
