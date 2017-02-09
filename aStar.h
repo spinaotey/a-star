@@ -7,13 +7,13 @@ enum whichQueue {NONE, OPEN, CLOSED};
 
 typedef struct AStarStatus_s{
     double g,h,f;
-    uint64_t parent;
+    uint32_t parent;
     Queue whq;
 } AStarStatus_t;
 
 typedef struct queue_s{
     struct queue_s *next;
-    uint64_t id;
+    uint32_t id;
 } queue_t;
 
 typedef struct node_s node_t;
@@ -58,7 +58,7 @@ double heuristic1(node_t currentNode, node_t destinationNode);
  *  Return: position of the node with input ID. If not found it
  *          returns -1.
  */
-uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId);
+uint32_t findNode(node_t *nodes, uint32_t nNodes, uint32_t targetId);
 
 /*  INSERTNODETOQUEUE
  *
@@ -71,7 +71,7 @@ uint64_t findNode(node_t *nodes, uint64_t nNodes, uint64_t targetId);
  *      nodeId: ID to put into list in a sorted way.
  *      status: vector of status of the nodes in the algorithm.
  */
-void insertNodeToQueue(queue_t **queue,uint64_t nodeId,
+void insertNodeToQueue(queue_t **queue,uint32_t nodeId,
                        AStarStatus_t *status);
 
 /*  DELETENODEFROMQUEUE
@@ -83,7 +83,7 @@ void insertNodeToQueue(queue_t **queue,uint64_t nodeId,
  *      queue: queue pointer to pointer of the first element.
  *      nodeId: ID to put into list in a sorted way.
  */
-void deleteNodefromQueue(queue_t **queue, uint64_t nodeId);
+void deleteNodefromQueue(queue_t **queue, uint32_t nodeId);
 
 /*  ASTARALGORITHM
  *
@@ -102,5 +102,5 @@ void deleteNodefromQueue(queue_t **queue, uint64_t nodeId);
  *  Return: 0 if algorithm was successfull in finding a path, 1 otherwise.
  */
 uint8_t aStarAlgorithm(node_t *nodes, AStarStatus_t *status, 
-                    uint64_t nNodes, uint64_t startNode,
-                    uint64_t targetNode);
+                    uint32_t nNodes, uint32_t startNode,
+                    uint32_t targetNode);

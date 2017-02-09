@@ -3,11 +3,11 @@
 
 /* Node Structure of the graph */
 typedef struct node_s{
-    uint64_t id;            // Identification number
+    uint32_t id;            // Identification number
     char *name;             // Name (if available)
     double lat, lon;        // Spherical coordinates
     uint8_t nsucc;          // Number of successors
-    uint64_t *successors;   // Position in node vector
+    uint32_t *successors;   // Position in node vector
 } node_t;
 
 
@@ -94,7 +94,7 @@ int compare_id(const void *node1, const void *node2);
         -node = node to add the successor.
         -vPos = position in the node vector.
  */
-void add_succ(node_t *node, uint64_t id);
+void add_succ(node_t *node, uint32_t id);
 
 
 /*  add_way
@@ -108,4 +108,4 @@ void add_succ(node_t *node, uint64_t id);
         -line = string of the way line.
         -separator = string to delimite the columns of the line.
  */
-void add_way(node_t *nodes, uint64_t nnodes, char *line, char *separator);
+void add_way(node_t *nodes, uint32_t nnodes, char *line, char *separator);

@@ -9,10 +9,10 @@
 
 int main(int argc, char *argv[]){
     
-    uint64_t nNodes,nSucc,nameLen;
-    uint64_t startId, targetId, startNode, targetNode;
-    uint64_t aux1,aux2,i;
-    uint64_t *successors;
+    uint32_t nNodes,nSucc,nameLen;
+    uint32_t startId, targetId, startNode, targetNode;
+    uint32_t aux1,aux2,i;
+    uint32_t *successors;
     char *nodeNames;
     AStarStatus_t *status; 
     node_t *nodes;
@@ -30,16 +30,16 @@ int main(int argc, char *argv[]){
 
     /* READ GRAPH FROM BINARY FILE */
     binIn = fopen(argv[1],"r");
-    fread(&nNodes,sizeof(uint64_t),1,binIn);
-    fread(&nSucc,sizeof(uint64_t),1,binIn);
-    fread(&nameLen,sizeof(uint64_t),1,binIn);
+    fread(&nNodes,sizeof(uint32_t),1,binIn);
+    fread(&nSucc,sizeof(uint32_t),1,binIn);
+    fread(&nameLen,sizeof(uint32_t),1,binIn);
 
     nodes = malloc(sizeof(node_t)*nNodes); assert(nodes);
-    successors = malloc(sizeof(uint64_t)*nSucc); assert(successors);
+    successors = malloc(sizeof(uint32_t)*nSucc); assert(successors);
     nodeNames = malloc(sizeof(char)*nameLen); assert(nodeNames);
 
     fread(nodes,sizeof(node_t),nNodes,binIn);
-    fread(successors,sizeof(uint64_t),nSucc,binIn);
+    fread(successors,sizeof(uint32_t),nSucc,binIn);
     fread(nodeNames,sizeof(char),nameLen,binIn);
 
     fclose(binIn);

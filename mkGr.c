@@ -116,7 +116,7 @@ node_t load_node(char *line, char *separator){
 
     node.nsucc = 0; //initiate number of successors
 
-    node.successors = (uint64_t *) malloc(sizeof(uint64_t)*2);assert(node.successors);
+    node.successors = (uint32_t *) malloc(sizeof(uint32_t)*2);assert(node.successors);
 
     for(i=0; i<n; i++)
         free(elements[i]);
@@ -142,8 +142,8 @@ node_t load_node(char *line, char *separator){
  */
  
 int compare_id(const void *node1, const void *node2){
-    uint64_t id_1 = ((node_t *) node1)->id;
-    uint64_t id_2 = ((node_t *) node2)->id;
+    uint32_t id_1 = ((node_t *) node1)->id;
+    uint32_t id_2 = ((node_t *) node2)->id;
     return id_1 < id_2 ? -1: (id_1 > id_2 ? 1 : 0);
 }
 
@@ -158,7 +158,7 @@ int compare_id(const void *node1, const void *node2){
         -node = node to add the successor.
         -vPos = position in the node vector.
  */
-void add_succ(node_t *node, uint64_t vPos){
+void add_succ(node_t *node, uint32_t vPos){
     uint8_t i;
 
     /* To not add duplicates */
@@ -170,7 +170,7 @@ void add_succ(node_t *node, uint64_t vPos){
         /* If needed, modify vector size of successors */    
         if((((node->nsucc)%2) == 0) && (node->nsucc != 0)){
             node->successors = realloc(node->successors,
-                                       sizeof(uint64_t)*((node->nsucc)+2));
+                                       sizeof(uint32_t)*((node->nsucc)+2));
             assert(node->successors);
         }
         /* Adds the vector position */
@@ -191,9 +191,9 @@ void add_succ(node_t *node, uint64_t vPos){
         -line = string of the way line.
         -separator = string to delimite the columns of the line.
  */
-void add_way(node_t *nodes, uint64_t nNodes, char *line, char *separator){
+void add_way(node_t *nodes, uint32_t nNodes, char *line, char *separator){
     uint32_t n, i, nnInWay = 0;
-    uint64_t *nPos;
+    uint32_t *nPos;
 
     
     node_t auxNode, *p;
@@ -204,7 +204,7 @@ void add_way(node_t *nodes, uint64_t nNodes, char *line, char *separator){
     
     /* There has to be more than one node in the way */
     if(n > 10){
-        nPos = (uint64_t *) malloc(sizeof(uint64_t)*(n-9));assert(nPos);
+        nPos = (uint32_t *) malloc(sizeof(uint32_t)*(n-9));assert(nPos);
         /* Find node positions in the node vector from their id's */
         for(i=9; i<n; i++){
             sscanf(elements[i],"%"SCNi64,&auxNode.id);
