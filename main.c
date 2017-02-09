@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/time.h>
 
 int main(int argc, char *argv[]){
     
@@ -16,6 +17,7 @@ int main(int argc, char *argv[]){
     AStarStatus_t *status; 
     node_t *nodes;
     FILE *binIn, *solutionF;
+    struct timeval tval_before, tval_after, tval_result;
     
     /* INPUT */
     if (argc < 4 ||
@@ -69,11 +71,19 @@ int main(int argc, char *argv[]){
     status = malloc(sizeof(AStarStatus_t)*nNodes); assert(status);
     for(i=0; i<nNodes;i++)
         status[i].whq = NONE;
+
+    /* A-star algorithm */
+    gettimeofday(&tval_before,NULL);
     if(aStarAlgorithm(nodes,status,nNodes,startNode,targetNode) == 0){
         fprintf(stderr,"Solution found, with distance %lf\n",status[targetNode].g);
     }else{
         fprintf(stderr,"ERROR: No path was found\n");
     }
+    gettimeofday(&tval_after,NULL);
+    timersub(&tval_after,&tval_before,&tval_result);
+    fprintf(stdout,"Time of algorithm: %2ld.%06ld\n",
+            (long int)tval_result.tv_sec,(long int)tval_result.tv_usec);
+
 
     solutionF = fopen("solution.dat","w");
     aux1 = targetNode;
