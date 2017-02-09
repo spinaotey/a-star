@@ -2,7 +2,7 @@ COMPILER        =       gcc
 CFLAGS          =       -Ofast
 LFLAGS          =       -lm
 OBJECTS         =       main.o epi.o 
-OBJECTSTEST		=		test.o mkGr.o
+OBJECTSTEST		=		makeGraph.o mkGr.o
 INCLUDES        =       mkGr.h myFunctions.h aStar.h
 
 main:           main.o mkGr.o aStar.o myFunctions.o
@@ -21,16 +21,16 @@ aStar.o: aStar.c $(INCLUDES)
 myFunctions.o: myFunctions.c $(INCLUDES)
 		$(COMPILER) $(CFLAGS) -c myFunctions.c $(LFLAGS)
 
-test:			$(OBJECTSTEST)
-		$(COMPILER) $(CFLAGS) -o test $(OBJECTSTEST) $(LFLAGS)
-runTest:		test
-		perf stat ./test spain.csv bla \| 3 23895681 1417363 79858
+makeGraph:			$(OBJECTSTEST)
+		$(COMPILER) $(CFLAGS) -o makeGraph $(OBJECTSTEST) $(LFLAGS)
+runMakeGraph:		makeGraph
+		perf stat ./makeGraph spain.csv graph.bin \| 3 23895681 1417363 79858
 
-test.o:		$(INCLUDES) test.c
-		$(COMPILER) $(CFLAGS) -c test.c $(LFLAGS)
+makeGraph.o:		$(INCLUDES) makeGraph.c
+		$(COMPILER) $(CFLAGS) -c makeGraph.c $(LFLAGS)
 
 runMain:		main
-		perf stat ./main bla 240949599 195977239
+		perf stat ./main graph.bin 240949599 195977239
 
 clean:
 		rm -f *.o *~
