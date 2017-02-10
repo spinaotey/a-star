@@ -62,7 +62,6 @@ char * strtok_single (char * str, char const * delims){
  
  */
 void sep_line(char *line, char *separators, char ***elements, uint32_t *n){
-    
     char *token;
 
     *n = 0;
@@ -106,7 +105,7 @@ node_t load_node(char *line, char *separator){
 
     sep_line(line,separator, &elements,&n);
     
-    sscanf(elements[1],"%"SCNi64,&node.id); // node ID
+    sscanf(elements[1],"%"SCNi32,&node.id); // node ID
 
     node.name = (char *) malloc(strlen(elements[2])+1);
     strcpy(node.name,elements[2]); // node name (if available)
@@ -118,6 +117,7 @@ node_t load_node(char *line, char *separator){
 
     node.successors = (uint32_t *) malloc(sizeof(uint32_t)*2);assert(node.successors);
 
+    //Free memory
     for(i=0; i<n; i++)
         free(elements[i]);
 
@@ -194,12 +194,10 @@ void add_succ(node_t *node, uint32_t vPos){
 void add_way(node_t *nodes, uint32_t nNodes, char *line, char *separator){
     uint32_t n, i, nnInWay = 0;
     uint32_t *nPos;
-
-    
     node_t auxNode, *p;
-
     char **elements;
     
+    //Separate line into elements by separator character
     sep_line(line,separator, &elements,&n);
     
     /* There has to be more than one node in the way */
@@ -207,7 +205,7 @@ void add_way(node_t *nodes, uint32_t nNodes, char *line, char *separator){
         nPos = (uint32_t *) malloc(sizeof(uint32_t)*(n-9));assert(nPos);
         /* Find node positions in the node vector from their id's */
         for(i=9; i<n; i++){
-            sscanf(elements[i],"%"SCNi64,&auxNode.id);
+            sscanf(elements[i],"%"SCNi32,&auxNode.id);
             p = (node_t *) bsearch(&auxNode, nodes, nNodes,sizeof(node_t),compare_id);
             /* If found in our nodes */
             if(p != NULL){
@@ -229,14 +227,10 @@ void add_way(node_t *nodes, uint32_t nNodes, char *line, char *separator){
                     add_succ(&nodes[nPos[i+1]],nPos[i]);
                 }
             };
-
-
         }
-
     }
-
+    //Free memory
     for(i=0; i<n; i++)
         free(elements[i]);
-
     free(elements);
 }

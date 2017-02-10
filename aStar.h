@@ -5,12 +5,14 @@
 typedef uint8_t Queue;
 enum whichQueue {NONE, OPEN, CLOSED};
 
+/*A Star status structure for a node */
 typedef struct AStarStatus_s{
-    double g,h,f;
-    uint32_t parent;
-    Queue whq;
+    double g,h,f;       //Cost
+    uint32_t parent;    //Parent node
+    Queue whq;          //Queue status
 } AStarStatus_t;
 
+/*Dynamic list structure */
 typedef struct queue_s{
     struct queue_s *next;
     uint32_t id;

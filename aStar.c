@@ -100,9 +100,11 @@ void insertNodeToQueue(queue_t **queue,uint32_t nodeId,
     queue_t *auxQueue,*queueIterator; 
     auxQueue = malloc(sizeof(queue_t)); assert(auxQueue);
     auxQueue->id = nodeId;
+    //Insert at the begining
     if(status[(*queue)->id].f >= status[nodeId].f){
         auxQueue->next = *queue;
         *queue = auxQueue;
+    //Insert somewhere else
     }else{
         queueIterator = *queue;
         while(queueIterator->next != NULL && 
@@ -125,10 +127,12 @@ void insertNodeToQueue(queue_t **queue,uint32_t nodeId,
  */
 void deleteNodefromQueue(queue_t **queue, uint32_t nodeId){
     queue_t *auxQueue,*queueIterator;
+    //Delete first element
     if((*queue)->id == nodeId){
         auxQueue = *queue;
         *queue = auxQueue->next;
         free(auxQueue);
+    //Delete other element
     }else{
         queueIterator = *queue;
         while(queueIterator->next->id != nodeId)
